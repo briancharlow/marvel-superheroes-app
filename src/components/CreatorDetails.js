@@ -1,0 +1,45 @@
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
+function CreatorDetails() {
+    const { id } = useParams();
+    const [creator, setCreator] = useState(null);
+
+    useEffect(() => {
+        const fetchCreator = async () => {
+            try {
+                const response = await axios.get(
+                    `https://gateway.marvel.com:443/v1/public/creators/${id}?ts=1&apikey=5a3fd4acf5883ae009dd2d89b1be40b2&hash=6fe2fc124054f776c09a8b5c08cc8638`
+                );
+                setCreator(response.data.data.results[0]);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchCreator();
+    }, [id]);
+
+    return (
+        <>
+            {creator && (
+                <div className="box-content">
+                    <div className="right-box">
+                        <img
+                            src={`${creator.thumbnail.path}.${creator.thumbnail.extension}`}
+                            alt=""
+                        />
+                    </div>
+                    <div className="left-box">
+                        <h1>{creator.fullName}</h1>
+                        <h4>{creator.modified}</h4>
+                        <p>{creator.description}</p>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
+export default CreatorDetails;
